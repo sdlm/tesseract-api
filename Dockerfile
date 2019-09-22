@@ -10,3 +10,7 @@ COPY poetry.lock ./
 COPY pyproject.toml ./
 RUN poetry config settings.virtualenvs.create false && \
     poetry install --no-dev --no-ansi --no-interaction
+
+COPY src /webapp
+
+CMD gunicorn -b 0.0.0.0:80 webapp.app:app --chdir / --reload
