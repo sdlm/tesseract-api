@@ -1,5 +1,8 @@
-from flask import Flask, jsonify
+import pytesseract
+from PIL import Image
+from flask import Flask, jsonify, request
 
+from .utils import get_image_from_request
 from .exceptions import InvalidUsage
 
 app = Flask(__name__)
@@ -18,5 +21,7 @@ def ping():
 
 
 @app.route("/extract", methods=["POST"])
-def get_the_same_img():
-    return {"status": "ok"}
+def extract():
+    img: Image = get_image_from_request(request)
+    text = pytesseract.image_to_string(img, lang='chi_sim', config='--psm 1 --oem 1')
+    return {"text": text}
